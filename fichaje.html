@@ -151,6 +151,11 @@ tr:hover td{background:rgba(255,255,255,.02);}
       <h3 id="suc-name"></h3>
       <p id="suc-time"></p>
     </div>
+    <div id="close-msg" style="display:none;text-align:center;padding:2rem 1rem;">
+      <div style="font-size:40px;margin-bottom:1rem;">👋</div>
+      <p style="font-size:16px;font-weight:600;margin-bottom:.5rem;">¡Listo!</p>
+      <p style="font-size:13px;color:var(--muted);">Podés cerrar esta página.</p>
+    </div>
     <div class="scanner-box" id="scanner-section">
       <h2>Escanear QR de ingreso</h2>
       <div id="reader"></div>
@@ -521,11 +526,20 @@ function showSuc(emp, dt, yaFicho) {
     ? `Ya fichaste hoy a las ${fmtHora(dt)}`
     : `Fichaje registrado a las ${fmtHora(dt)}`;
   sb.style.display='block';
-  setTimeout(()=>{
-    sb.style.display='none';
-    document.getElementById('scanner-section').style.display='block';
-    initScanner();
-  }, 4000);
+  const vieneDeQR = new URLSearchParams(window.location.search).get('qr')==='1';
+  if (!vieneDeQR) {
+    setTimeout(()=>{
+      sb.style.display='none';
+      document.getElementById('scanner-section').style.display='block';
+      initScanner();
+    }, 4000);
+  } else {
+    // Vino del QR: después del mensaje mostrar pantalla de cierre
+    setTimeout(()=>{
+      sb.style.display='none';
+      document.getElementById('close-msg').style.display='block';
+    }, 4000);
+  }
 }
 
 // ── AUTH ──
