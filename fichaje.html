@@ -814,7 +814,8 @@ function generarReporte(){
 let qrDone=false;
 function renderQR(){
   if(qrDone)return;
-  new QRCode(document.getElementById('qrcode'),{text:VALID_TOKEN,width:200,height:200,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});
+  const url='https://fabricamas.github.io/Fichaje/fichaje.html?qr=1';
+  new QRCode(document.getElementById('qrcode'),{text:url,width:220,height:220,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});
   qrDone=true;
 }
 
@@ -876,8 +877,28 @@ function borrarTodo(){
 
 // ── INIT ──
 startClock();
-initScanner();
 initPeriod();
+
+// Si viene del QR (parámetro ?qr=1), arrancar fichaje directo sin scanner
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('qr') === '1') {
+  // No iniciar scanner, procesar como si hubiera escaneado el QR
+  const dni = localStorage.getItem('f_my_dni');
+  if (dni) {
+    const {empleados} = getData();
+    const emp = empleados.find(e=>e.dni===dni);
+    if (emp) { fichar(emp); }
+    else {
+      document.getElementById('scanner-section').style.display='none';
+      document.getElementById('reg-section').style.display='block';
+    }
+  } else {
+    document.getElementById('scanner-section').style.display='none';
+    document.getElementById('reg-section').style.display='block';
+  }
+} else {
+  initScanner();
+}
 </script>
 </body>
 </html>
