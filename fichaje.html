@@ -340,6 +340,9 @@ tr:hover td{background:rgba(255,255,255,.02);}
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxATU52g9OKEGROyydcIkXddYCo6-RaLNtfeVoWlvTyfEEZ6W58EyT5NABwBD8a97T_jA/exec';
 const APP_URL = 'https://fabricamas.github.io/Fichaje/fichaje.html';
+const WORK_LAT = -34.44182796391336;
+const WORK_LNG = -58.57176751896773;
+const WORK_RADIUS = 100; // metros
 const DIAS_ES = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
 const MESES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
@@ -414,7 +417,53 @@ async function apiPost(params) {
   return await jsonp(params);
 }
 
-// ── CLOCK ──
+// ── GEOLOCALIZACIÓN ──
+function distanciaMetros(lat1, lng1, lat2, lng2) {
+  const R = 6371000;
+  const dLat = (lat2-lat1) * Math.PI/180;
+  const dLng = (lng2-lng1) * Math.PI/180;
+  const a = Math.sin(dLat/2)*Math.sin(dLat/2) +
+    Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
+    Math.sin(dLng/2)*Math.sin(dLng/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+function verificarUbicacion() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) { reject('no_soporte'); return; }
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const dist = distanciaMetros(pos.coords.latitude, pos.coords.longitude, WORK_LAT, WORK_LNG);
+        resolve({ ok: dist <= WORK_RADIUS, distancia: Math.round(dist) });
+      },
+      err => {
+        if (err.code === 1) reject('denegado');
+        else reject('error');
+      },
+      { timeout: 10000, maximumAge: 0, enableHighAccuracy: true }
+    );
+  });
+}
+function mostrarErrorGeo(tipo) {
+  document.getElementById('loading-box').style.display='none';
+  document.getElementById('reg-section').style.display='none';
+  const d = document.getElementById('close-msg');
+  d.style.display='block';
+  if (tipo === 'denegado') {
+    d.innerHTML=`<div style="font-size:32px;margin-bottom:1rem;">📍</div>
+      <p style="font-size:15px;font-weight:600;color:var(--danger);margin-bottom:.5rem;">Ubicación requerida</p>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;">Para fichar necesitás activar la ubicación en tu celular y permitírsela a esta página.<br><br>Activá el GPS, recargá la página y volvé a escanear el QR.</p>`;
+  } else if (tipo === 'lejos') {
+    d.innerHTML=`<div style="font-size:32px;margin-bottom:1rem;">🚫</div>
+      <p style="font-size:15px;font-weight:600;color:var(--danger);margin-bottom:.5rem;">Fuera del área de trabajo</p>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;">Tu ubicación no corresponde al lugar de trabajo. Solo podés fichar cuando estés en el trabajo.</p>`;
+  } else {
+    d.innerHTML=`<div style="font-size:32px;margin-bottom:1rem;">⚠</div>
+      <p style="font-size:15px;font-weight:600;color:var(--warn);margin-bottom:.5rem;">No se pudo obtener ubicación</p>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;">Activá el GPS, esperá unos segundos y volvé a intentar.</p>`;
+  }
+}
+
+
 function startClock(){
   const clk=document.getElementById('clock'), ds=document.getElementById('datestr');
   function tick(){ const n=new Date(); clk.textContent=`${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())}`; ds.textContent=`${DIAS_ES[n.getDay()]}, ${n.getDate()} de ${MESES_ES[n.getMonth()]} de ${n.getFullYear()}`; }
@@ -450,6 +499,14 @@ function showLoading(msg){ document.getElementById('loading-box').style.display=
 function hideLoading(){ document.getElementById('loading-box').style.display='none'; }
 
 async function procesarQR(){
+  showLoading('Verificando ubicación...');
+  try {
+    const geo = await verificarUbicacion();
+    if (!geo.ok) { mostrarErrorGeo('lejos'); return; }
+  } catch(e) {
+    mostrarErrorGeo(e === 'denegado' ? 'denegado' : 'error');
+    return;
+  }
   const dni = localStorage.getItem('f_my_dni');
   if(dni){
     showLoading('Verificando empleado...');
@@ -460,6 +517,7 @@ async function procesarQR(){
     } catch(e){}
     hideLoading();
   }
+  hideLoading();
   document.getElementById('reg-section').style.display='block';
 }
 
@@ -470,10 +528,18 @@ async function registerAndFichar(){
   if(!nombre||!apellido||!dni){toast('Completá todos los campos','err');return;}
   document.getElementById('btn-registrar').disabled=true;
   document.getElementById('reg-section').style.display='none';
+  showLoading('Verificando ubicación...');
+  try {
+    const geo = await verificarUbicacion();
+    if (!geo.ok) { mostrarErrorGeo('lejos'); document.getElementById('btn-registrar').disabled=false; return; }
+  } catch(e) {
+    mostrarErrorGeo(e === 'denegado' ? 'denegado' : 'error');
+    document.getElementById('btn-registrar').disabled=false;
+    return;
+  }
   showLoading('Registrando empleado...');
   try {
     const data = await apiGet();
-    let emp = data.empleados.find(e=>e.dni===dni);
     if(emp){
       // Re-registro: agregar alerta
       const ahora=new Date();
