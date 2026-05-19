@@ -540,6 +540,7 @@ async function registerAndFichar(){
   showLoading('Registrando empleado...');
   try {
     const data = await apiGet();
+    let emp = data.empleados.find(e=>e.dni===dni);
     if(emp){
       // Re-registro: agregar alerta
       const ahora=new Date();
