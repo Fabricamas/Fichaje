@@ -338,7 +338,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
 <div class="toast" id="toast"></div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYjiwaInwkOTWEIdyKZchrVVfPUAzdsh5bNQWGQkrXwu-X93IwVaRPpEaxX55BwYMFhw/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz30KFw-zm9tLhNnI1EnB863ICfy5peWlp4XY_BnQlAT2W5mbq6PPGPQi_rdXptM5MpGw/exec';
 const APP_URL = 'https://fabricamas.github.io/Fichaje/fichaje.html';
 const DIAS_ES = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
 const MESES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -373,30 +373,28 @@ function openModal(id){document.getElementById(id).classList.add('show');}
 function closeModal(id){document.getElementById(id).classList.remove('show');}
 
 // ── API ──
+async function apiCall(params) {
+  const url = SCRIPT_URL + '?' + new URLSearchParams(params).toString();
+  const r = await fetch(url);
+  return await r.json();
+}
 async function apiGet() {
-  const r = await fetch(SCRIPT_URL, {method:'GET'});
-  const d = await r.json();
-  // Sheets devuelve arrays de arrays; convertimos a objetos
+  const d = await apiCall({});
   const empRows = d.empleados || [];
   const fichRows = d.fichajes || [];
-  // Salteamos la primera fila si es encabezado
   const emps = empRows.filter(r=>r[0]&&r[0]!=='id').map(r=>({
-    id:r[0], dni:String(r[1]), nombre:r[2], apellido:r[3],
+    id:String(r[0]), dni:String(r[1]), nombre:String(r[2]), apellido:String(r[3]),
     cargo:r[4]||'', tel:r[5]||'', email:r[6]||'', comment:r[7]||'', creado:r[8]||''
   }));
   const fichs = fichRows.filter(r=>r[0]&&r[0]!=='id').map(r=>({
-    id:r[0], dni:String(r[1]), nombre:r[2], apellido:r[3],
-    fecha:r[4], hora:r[5], tarde:parseInt(r[6])||0, nota:r[7]||''
+    id:String(r[0]), dni:String(r[1]), nombre:String(r[2]), apellido:String(r[3]),
+    fecha:String(r[4]), hora:String(r[5]), tarde:parseInt(r[6])||0, nota:r[7]||''
   }));
   cache = { empleados:emps, fichajes:fichs, loaded:true };
   return cache;
 }
-async function apiPost(data) {
-  const r = await fetch(SCRIPT_URL, {
-    method:'POST',
-    body: JSON.stringify(data),
-  });
-  return await r.json();
+async function apiPost(params) {
+  return await apiCall(params);
 }
 
 // ── CLOCK ──
