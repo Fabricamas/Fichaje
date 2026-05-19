@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fichaje</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <style>
 :root{--bg:#0e1014;--s1:#161a20;--s2:#1d2028;--s3:#252930;--bd:#2c313c;--acc:#c8f03e;--acc2:#3effd4;--danger:#ff5f57;--warn:#ffbd2e;--info:#3e9eff;--text:#eef0f4;--muted:#687080;--font:'Sora',sans-serif;--mono:'DM Mono',monospace;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -25,21 +24,16 @@ main{flex:1;padding:1.5rem;max-width:960px;margin:0 auto;width:100%;}
 .field{display:flex;flex-direction:column;gap:5px;margin-bottom:.875rem;}
 .field label{font-size:11px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;}
 .field input,.field textarea,.field select{background:var(--s2);border:1px solid var(--bd);color:var(--text);font-family:var(--font);font-size:13px;padding:9px 11px;border-radius:8px;outline:none;transition:border-color .18s;width:100%;}
-.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--acc);}
+.field input:focus,.field textarea:focus{border-color:var(--acc);}
 .field textarea{resize:vertical;min-height:70px;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;}
 .btn{display:inline-flex;align-items:center;gap:6px;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;transition:all .18s;}
-.btn-acc{background:var(--acc);color:#0e1014;}
-.btn-acc:hover{filter:brightness(1.08);}
-.btn-ghost{background:var(--s2);border:1px solid var(--bd);color:var(--text);}
-.btn-ghost:hover{background:var(--s3);}
-.btn-danger{background:rgba(255,95,87,.12);border:1px solid rgba(255,95,87,.3);color:var(--danger);}
-.btn-danger:hover{background:rgba(255,95,87,.22);}
+.btn-acc{background:var(--acc);color:#0e1014;}.btn-acc:hover{filter:brightness(1.08);}
+.btn-ghost{background:var(--s2);border:1px solid var(--bd);color:var(--text);}.btn-ghost:hover{background:var(--s3);}
+.btn-danger{background:rgba(255,95,87,.12);border:1px solid rgba(255,95,87,.3);color:var(--danger);}.btn-danger:hover{background:rgba(255,95,87,.22);}
 .btn-warn{background:rgba(255,189,46,.1);border:1px solid rgba(255,189,46,.3);color:var(--warn);}
-.btn-sm{padding:5px 10px;font-size:12px;}
-.btn-xs{padding:3px 8px;font-size:11px;border-radius:5px;}
-.btn-full{width:100%;justify-content:center;}
-.badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500;letter-spacing:.04em;}
+.btn-sm{padding:5px 10px;font-size:12px;}.btn-xs{padding:3px 8px;font-size:11px;border-radius:5px;}.btn-full{width:100%;justify-content:center;}
+.badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500;}
 .badge-ok{background:rgba(62,255,212,.12);color:var(--acc2);border:1px solid rgba(62,255,212,.25);}
 .badge-warn{background:rgba(255,189,46,.12);color:var(--warn);border:1px solid rgba(255,189,46,.25);}
 .badge-danger{background:rgba(255,95,87,.12);color:var(--danger);border:1px solid rgba(255,95,87,.25);}
@@ -55,9 +49,6 @@ tr:hover td{background:rgba(255,255,255,.02);}
 .fichar-wrap{max-width:400px;margin:0 auto;display:flex;flex-direction:column;gap:1rem;}
 .clock-big{font-family:var(--mono);font-size:52px;color:var(--acc);text-align:center;letter-spacing:.04em;line-height:1;}
 .date-sm{font-size:12px;color:var(--muted);text-align:center;letter-spacing:.08em;margin-bottom:.5rem;}
-.scanner-box{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:1.25rem;}
-.scanner-box h2{font-size:14px;font-weight:600;margin-bottom:1rem;}
-#reader{border-radius:8px;overflow:hidden;width:100%!important;}
 .reg-wrap{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:1.25rem;display:none;}
 .reg-wrap h2{font-size:14px;font-weight:600;margin-bottom:.4rem;}
 .reg-wrap .sub{font-size:12px;color:var(--muted);margin-bottom:1rem;}
@@ -65,8 +56,11 @@ tr:hover td{background:rgba(255,255,255,.02);}
 .success-box .big{font-size:36px;margin-bottom:.5rem;}
 .success-box h3{font-size:16px;font-weight:600;color:var(--acc2);margin-bottom:.25rem;}
 .success-box p{font-size:13px;color:var(--muted);}
+.loading-box{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:2rem;text-align:center;display:none;}
+.spinner{width:28px;height:28px;border:3px solid var(--bd);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .75rem;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-/* ADMIN LOGIN */
+/* LOGIN */
 .login-wrap{max-width:340px;margin:3rem auto;}
 .login-wrap .brand{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--acc);margin-bottom:.5rem;}
 .login-wrap h1{font-size:22px;font-weight:700;margin-bottom:.25rem;}
@@ -75,8 +69,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
 /* ADMIN TABS */
 .atabs{display:flex;gap:4px;margin-bottom:1.25rem;border-bottom:1px solid var(--bd);padding-bottom:.875rem;flex-wrap:wrap;}
 .atab{background:none;border:1px solid transparent;color:var(--muted);font-size:12px;padding:5px 12px;border-radius:6px;transition:all .18s;}
-.atab:hover{color:var(--text);}
-.atab.on{background:var(--s2);border-color:var(--bd);color:var(--text);}
+.atab:hover{color:var(--text);}.atab.on{background:var(--s2);border-color:var(--bd);color:var(--text);}
 .asection{display:none;}.asection.on{display:block;}
 
 /* STATS */
@@ -92,8 +85,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
 .emp-card{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:1.1rem 1.25rem;}
 .emp-head{display:flex;align-items:center;gap:.875rem;margin-bottom:.875rem;}
 .emp-avatar{width:42px;height:42px;border-radius:50%;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:var(--acc);flex-shrink:0;font-family:var(--mono);}
-.emp-name{font-size:14px;font-weight:600;}
-.emp-dni{font-size:11px;color:var(--muted);font-family:var(--mono);}
+.emp-name{font-size:14px;font-weight:600;}.emp-dni{font-size:11px;color:var(--muted);font-family:var(--mono);}
 .emp-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:.875rem;border-top:1px solid var(--bd);padding-top:.875rem;}
 .emp-comment{font-size:12px;color:var(--muted);font-style:italic;margin-top:.5rem;padding:.5rem .75rem;background:var(--s2);border-radius:6px;border-left:2px solid var(--bd);white-space:pre-wrap;}
 
@@ -104,7 +96,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
 .modal h2{font-size:16px;font-weight:600;margin-bottom:1.25rem;}
 .modal-footer{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.25rem;border-top:1px solid var(--bd);padding-top:1rem;}
 
-/* PERIOD SEL */
+/* PERIOD */
 .period-sel{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center;}
 .period-sel label{font-size:12px;color:var(--muted);}
 .period-sel select,.period-sel input[type=number]{background:var(--s2);border:1px solid var(--bd);color:var(--text);font-family:var(--font);font-size:13px;padding:7px 10px;border-radius:8px;outline:none;}
@@ -115,21 +107,16 @@ tr:hover td{background:rgba(255,255,255,.02);}
 .day-date{width:80px;color:var(--muted);font-family:var(--mono);}
 .day-time{width:55px;font-family:var(--mono);}
 
-/* QR */
 #qrcode{background:#fff;padding:16px;border-radius:12px;display:inline-block;}
 
-/* TOAST */
 .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:.75rem 1.1rem;font-size:13px;z-index:300;display:none;gap:.5rem;align-items:center;}
-.toast.show{display:flex;}
-.toast.ok{border-color:rgba(62,255,212,.4);color:var(--acc2);}
-.toast.err{border-color:rgba(255,95,87,.4);color:var(--danger);}
-
+.toast.show{display:flex;}.toast.ok{border-color:rgba(62,255,212,.4);color:var(--acc2);}.toast.err{border-color:rgba(255,95,87,.4);color:var(--danger);}
 ::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px;}
-@media print{nav,button,.modal-overlay,.ntab,.atabs{display:none!important;}body{background:#fff;color:#000;}}
+@media print{nav,button,.modal-overlay,.atabs{display:none!important;}body{background:#fff;color:#000;}}
 </style>
 </head>
 <body>
-<div id="app" style="display:flex;flex-direction:column;min-height:100vh;">
+<div style="display:flex;flex-direction:column;min-height:100vh;">
 <nav>
   <div class="logo">⬡ FICHAJE</div>
   <div class="nav-right">
@@ -146,6 +133,10 @@ tr:hover td{background:rgba(255,255,255,.02);}
       <div class="clock-big" id="clock">00:00:00</div>
       <div class="date-sm" id="datestr"></div>
     </div>
+    <div class="loading-box" id="loading-box">
+      <div class="spinner"></div>
+      <p style="font-size:13px;color:var(--muted);" id="loading-msg">Registrando fichaje...</p>
+    </div>
     <div class="success-box" id="success-box">
       <div class="big">✓</div>
       <h3 id="suc-name"></h3>
@@ -156,25 +147,19 @@ tr:hover td{background:rgba(255,255,255,.02);}
       <p style="font-size:16px;font-weight:600;margin-bottom:.5rem;">¡Listo!</p>
       <p style="font-size:13px;color:var(--muted);">Podés cerrar esta página.</p>
     </div>
-    <div class="scanner-box" id="scanner-section">
-      <h2>Escanear QR de ingreso</h2>
-      <div id="reader"></div>
-      <p style="font-size:11px;color:var(--muted);margin-top:.75rem;text-align:center;">Apuntá la cámara al QR pegado en la entrada</p>
-    </div>
     <div class="reg-wrap" id="reg-section">
       <h2>Primer ingreso</h2>
       <p class="sub">Completá tus datos una sola vez. Después solo escaneás el QR.</p>
       <div class="field"><label>Nombre</label><input id="f-nombre" type="text" autocomplete="off"></div>
       <div class="field"><label>Apellido</label><input id="f-apellido" type="text" autocomplete="off"></div>
       <div class="field"><label>DNI</label><input id="f-dni" type="text" maxlength="10" autocomplete="off"></div>
-      <button class="btn btn-acc btn-full" onclick="registerAndFichar()">Registrarme y fichar</button>
+      <button class="btn btn-acc btn-full" id="btn-registrar" onclick="registerAndFichar()">Registrarme y fichar</button>
     </div>
   </div>
 </div>
 
 <!-- PANEL ADMIN -->
 <div class="panel" id="panel-admin">
-
   <div id="admin-login">
     <div class="login-wrap">
       <div class="brand">PANEL ADMINISTRATIVO</div>
@@ -199,11 +184,6 @@ tr:hover td{background:rgba(255,255,255,.02);}
 
     <!-- DASHBOARD -->
     <div class="asection on" id="sec-dashboard">
-      <div id="backup-banner" style="display:none;background:rgba(255,189,46,.1);border:1px solid rgba(255,189,46,.35);border-radius:10px;padding:.75rem 1rem;margin-bottom:1rem;align-items:center;gap:.75rem;flex-wrap:wrap;">
-        <span style="font-size:13px;color:var(--warn);flex:1;"></span>
-        <button class="btn btn-warn btn-sm" onclick="exportarDatosConTimestamp()">Exportar ahora</button>
-        <button class="btn btn-ghost btn-sm" onclick="dismissBackup()">Ignorar</button>
-      </div>
       <div id="rereg-banner" style="display:none;background:rgba(255,95,87,.08);border:1px solid rgba(255,95,87,.3);border-radius:10px;padding:.75rem 1rem;margin-bottom:1rem;">
         <div style="font-size:12px;color:var(--danger);font-weight:600;margin-bottom:.4rem;">⚠ Alertas de re-registro desde nuevo dispositivo</div>
         <div id="rereg-list" style="font-size:12px;color:var(--muted);"></div>
@@ -235,13 +215,13 @@ tr:hover td{background:rgba(255,255,255,.02);}
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;">
         <h2 style="font-size:16px;font-weight:600;">Registros de fichajes</h2>
         <div style="display:flex;gap:.5rem;">
-          <input type="text" id="reg-search" placeholder="Filtrar por nombre, DNI..." style="background:var(--s2);border:1px solid var(--bd);color:var(--text);font-family:var(--font);font-size:13px;padding:7px 11px;border-radius:8px;outline:none;width:200px;" oninput="renderRegistros()">
+          <input type="text" id="reg-search" placeholder="Filtrar..." style="background:var(--s2);border:1px solid var(--bd);color:var(--text);font-family:var(--font);font-size:13px;padding:7px 11px;border-radius:8px;outline:none;width:200px;" oninput="renderRegistros()">
           <button class="btn btn-ghost btn-sm" onclick="exportCSV()">↓ CSV</button>
         </div>
       </div>
       <div class="card" style="padding:.75rem;">
         <div class="tbl-wrap"><table>
-          <thead><tr><th>Empleado</th><th>DNI</th><th>Fecha</th><th>Hora</th><th>Min. tarde</th><th>Acciones</th></tr></thead>
+          <thead><tr><th>Empleado</th><th>DNI</th><th>Fecha</th><th>Hora</th><th>Min. tarde</th><th>Nota</th></tr></thead>
           <tbody id="reg-tbody"></tbody>
         </table></div>
       </div>
@@ -284,7 +264,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
             <li>Primera vez: completá nombre, apellido y DNI</li>
             <li>Siguientes veces: solo escaneás y listo</li>
           </ol>
-          <p style="font-size:11px;color:var(--muted);margin-top:.75rem;padding:.5rem .75rem;background:var(--s2);border-radius:6px;">No se necesita ninguna app. Funciona con cualquier celular con cámara.</p>
+          <p style="font-size:11px;color:var(--muted);margin-top:.75rem;padding:.5rem .75rem;background:var(--s2);border-radius:6px;">No se necesita ninguna app. Funciona con cualquier celular.</p>
         </div>
       </div>
     </div>
@@ -296,21 +276,18 @@ tr:hover td{background:rgba(255,255,255,.02);}
         <div class="card">
           <h3>Sistema</h3>
           <div class="field"><label>Hora de entrada oficial</label><input id="cfg-hora" type="time"></div>
-          <div class="field"><label>Nombre de la empresa</label><input id="cfg-empresa" type="text" placeholder="Mi Empresa S.A."></div>
+          <div class="field"><label>Nombre de la empresa</label><input id="cfg-empresa" type="text"></div>
           <div class="field"><label>Nueva contraseña admin</label><input id="cfg-pass" type="password" placeholder="Dejar vacío para no cambiar"></div>
-          <div class="field"><label>Confirmar contraseña</label><input id="cfg-pass2" type="password" placeholder="Repetir contraseña"></div>
+          <div class="field"><label>Confirmar contraseña</label><input id="cfg-pass2" type="password"></div>
           <button class="btn btn-acc" onclick="saveConfig()">Guardar cambios</button>
         </div>
         <div class="card">
-          <h3>Datos</h3>
-          <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;line-height:1.6;">Los datos se guardan en este navegador. Exportalos regularmente como respaldo.</p>
+          <h3>Exportar datos</h3>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;line-height:1.6;">Exportá los datos como respaldo local.</p>
           <div style="display:flex;flex-direction:column;gap:.5rem;">
-            <button class="btn btn-ghost btn-sm btn-full" onclick="exportarDatosConTimestamp()">↓ Exportar respaldo JSON</button>
-            <button class="btn btn-ghost btn-sm btn-full" onclick="importarDatos()">↑ Importar respaldo JSON</button>
             <button class="btn btn-ghost btn-sm btn-full" onclick="exportCSV()">↓ Exportar fichajes CSV</button>
-            <button class="btn btn-danger btn-sm btn-full" onclick="borrarTodo()">⚠ Borrar todos los datos</button>
+            <button class="btn btn-ghost btn-sm btn-full" onclick="exportEmpleadosCSV()">↓ Exportar empleados CSV</button>
           </div>
-          <input type="file" id="import-file" accept=".json" style="display:none;" onchange="processImport(event)">
         </div>
       </div>
     </div>
@@ -331,7 +308,6 @@ tr:hover td{background:rgba(255,255,255,.02);}
 
   </div>
 </div>
-
 </main>
 </div>
 
@@ -345,32 +321,16 @@ tr:hover td{background:rgba(255,255,255,.02);}
     </div>
     <div class="row2">
       <div class="field"><label>DNI *</label><input id="me-dni" type="text"></div>
-      <div class="field"><label>Cargo / Área</label><input id="me-cargo" type="text" placeholder="Opcional"></div>
+      <div class="field"><label>Cargo / Área</label><input id="me-cargo" type="text"></div>
     </div>
     <div class="row2">
-      <div class="field"><label>Teléfono</label><input id="me-tel" type="text" placeholder="Opcional"></div>
-      <div class="field"><label>Email</label><input id="me-email" type="email" placeholder="Opcional"></div>
+      <div class="field"><label>Teléfono</label><input id="me-tel" type="text"></div>
+      <div class="field"><label>Email</label><input id="me-email" type="email"></div>
     </div>
-    <div class="field"><label>Comentarios / Notas internas del admin</label><textarea id="me-comment" placeholder="Observaciones, advertencias, acuerdos especiales..."></textarea></div>
+    <div class="field"><label>Comentarios / Notas internas</label><textarea id="me-comment" placeholder="Observaciones, advertencias, acuerdos especiales..."></textarea></div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-emp')">Cancelar</button>
-      <button class="btn btn-acc" onclick="saveEmp()">Guardar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL EDITAR FICHAJE -->
-<div class="modal-overlay" id="modal-reg">
-  <div class="modal">
-    <h2>Editar fichaje</h2>
-    <div class="row2">
-      <div class="field"><label>Fecha</label><input id="mr-fecha" type="date"></div>
-      <div class="field"><label>Hora</label><input id="mr-hora" type="time"></div>
-    </div>
-    <div class="field"><label>Nota interna</label><input id="mr-nota" type="text" placeholder="Ej: llegó tarde por lluvia"></div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-reg')">Cancelar</button>
-      <button class="btn btn-acc" onclick="saveReg()">Guardar</button>
+      <button class="btn btn-acc" id="btn-save-emp" onclick="saveEmp()">Guardar</button>
     </div>
   </div>
 </div>
@@ -378,291 +338,259 @@ tr:hover td{background:rgba(255,255,255,.02);}
 <div class="toast" id="toast"></div>
 
 <script>
-const VALID_TOKEN = 'FICHAJE_QR_v1';
-const LS = {
-  get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
-  set: (k,v) => localStorage.setItem(k, JSON.stringify(v)),
-};
-function getData() {
-  return {
-    empleados: LS.get('f_emps') || [],
-    fichajes: LS.get('f_fichs') || [],
-    config: LS.get('f_cfg') || { pass:'1614', hora:'07:00', empresa:'' },
-  };
-}
-function saveEmps(a) { LS.set('f_emps', a); }
-function saveFichs(a) { LS.set('f_fichs', a); }
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYjiwaInwkOTWEIdyKZchrVVfPUAzdsh5bNQWGQkrXwu-X93IwVaRPpEaxX55BwYMFhw/exec';
+const APP_URL = 'https://fabricamas.github.io/Fichaje/fichaje.html';
+const DIAS_ES = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const MESES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+// ── CACHE LOCAL (para velocidad en admin) ──
+let cache = { empleados: [], fichajes: [], loaded: false };
+
+// ── CONFIG LOCAL (contraseña, hora) ──
+const LS = { get: k=>{ try{return JSON.parse(localStorage.getItem(k));}catch{return null;} }, set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)) };
+function getCfg() { return LS.get('f_cfg') || { pass:'1614', hora:'07:00', empresa:'' }; }
 function saveCfg(c) { LS.set('f_cfg', c); }
+
+// ── UTILS ──
 function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2); }
 function pad(n) { return String(n).padStart(2,'0'); }
 function initials(n,a) { return ((n||'?')[0]+(a||'?')[0]).toUpperCase(); }
 function fmtDate(ts) { const d=new Date(ts); return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`; }
 function fmtHora(ts) { const d=new Date(ts); return `${pad(d.getHours())}:${pad(d.getMinutes())}`; }
-function minutesTarde(ts, horaOficial) {
-  const d = new Date(ts);
-  const [h,m] = horaOficial.split(':').map(Number);
-  const of = new Date(d); of.setHours(h,m,0,0);
-  return Math.max(0, Math.floor((d-of)/60000));
+function minutesTarde(ts, horaOf) {
+  const d=new Date(ts); const [h,m]=horaOf.split(':').map(Number);
+  const of=new Date(d); of.setHours(h,m,0,0);
+  return Math.max(0,Math.floor((d-of)/60000));
 }
-const DIAS_ES = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-const MESES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-
 let toastT;
-function toast(msg, type='ok') {
-  const t = document.getElementById('toast');
-  t.textContent = (type==='ok'?'✓ ':'✗ ')+msg;
-  t.className = `toast show ${type}`;
-  clearTimeout(toastT);
-  toastT = setTimeout(()=>t.classList.remove('show'), 3000);
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=(type==='ok'?'✓ ':'✗ ')+msg;
+  t.className=`toast show ${type}`;
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),3500);
 }
-function openModal(id) { document.getElementById(id).classList.add('show'); }
-function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function openModal(id){document.getElementById(id).classList.add('show');}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+
+// ── API ──
+async function apiGet() {
+  const r = await fetch(SCRIPT_URL, {method:'GET'});
+  const d = await r.json();
+  // Sheets devuelve arrays de arrays; convertimos a objetos
+  const empRows = d.empleados || [];
+  const fichRows = d.fichajes || [];
+  // Salteamos la primera fila si es encabezado
+  const emps = empRows.filter(r=>r[0]&&r[0]!=='id').map(r=>({
+    id:r[0], dni:String(r[1]), nombre:r[2], apellido:r[3],
+    cargo:r[4]||'', tel:r[5]||'', email:r[6]||'', comment:r[7]||'', creado:r[8]||''
+  }));
+  const fichs = fichRows.filter(r=>r[0]&&r[0]!=='id').map(r=>({
+    id:r[0], dni:String(r[1]), nombre:r[2], apellido:r[3],
+    fecha:r[4], hora:r[5], tarde:parseInt(r[6])||0, nota:r[7]||''
+  }));
+  cache = { empleados:emps, fichajes:fichs, loaded:true };
+  return cache;
+}
+async function apiPost(data) {
+  const r = await fetch(SCRIPT_URL, {
+    method:'POST',
+    body: JSON.stringify(data),
+  });
+  return await r.json();
+}
 
 // ── CLOCK ──
-function startClock() {
-  const clk = document.getElementById('clock');
-  const ds = document.getElementById('datestr');
-  function tick() {
-    const n = new Date();
-    clk.textContent = `${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())}`;
-    ds.textContent = `${DIAS_ES[n.getDay()]}, ${n.getDate()} de ${MESES_ES[n.getMonth()]} de ${n.getFullYear()}`;
-  }
+function startClock(){
+  const clk=document.getElementById('clock'), ds=document.getElementById('datestr');
+  function tick(){ const n=new Date(); clk.textContent=`${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())}`; ds.textContent=`${DIAS_ES[n.getDay()]}, ${n.getDate()} de ${MESES_ES[n.getMonth()]} de ${n.getFullYear()}`; }
   tick(); setInterval(tick,1000);
 }
 
 // ── PANELS ──
-function showPanel(id) {
+function showPanel(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('on'));
   document.getElementById('panel-'+id).classList.add('on');
   document.querySelectorAll('.ntab')[id==='fichar'?0:1].classList.add('on');
-  if (id==='fichar') initScanner();
-  if (id==='admin') { stopScanner(); checkLogin(); }
+  if(id==='admin') checkLogin();
 }
-function showAsec(id) {
+function showAsec(id){
   document.querySelectorAll('.asection').forEach(s=>s.classList.remove('on'));
   document.querySelectorAll('.atab').forEach(t=>t.classList.remove('on'));
   document.getElementById(id).classList.add('on');
-  const order = ['sec-dashboard','sec-empleados','sec-registros','sec-reporte','sec-qr','sec-config','sec-seguridad'];
-  const idx = order.indexOf(id);
-  if (idx>=0) document.querySelectorAll('.atab')[idx].classList.add('on');
-  if (id==='sec-dashboard') renderDashboard();
-  if (id==='sec-empleados') renderEmpleados();
-  if (id==='sec-registros') renderRegistros();
-  if (id==='sec-qr') renderQR();
-  if (id==='sec-config') loadConfig();
-  if (id==='sec-seguridad') renderSeguridad();
+  const order=['sec-dashboard','sec-empleados','sec-registros','sec-reporte','sec-qr','sec-config','sec-seguridad'];
+  const idx=order.indexOf(id); if(idx>=0) document.querySelectorAll('.atab')[idx].classList.add('on');
+  if(id==='sec-dashboard') loadAndRenderDashboard();
+  if(id==='sec-empleados') loadAndRenderEmpleados();
+  if(id==='sec-registros') loadAndRenderRegistros();
+  if(id==='sec-qr') renderQR();
+  if(id==='sec-config') loadConfig();
+  if(id==='sec-seguridad') renderSeguridad();
 }
 
-// ── SCANNER ──
-let qrScanner = null, scanRunning = false;
-function initScanner() {
-  if (scanRunning) return;
-  if (!qrScanner) qrScanner = new Html5Qrcode('reader');
-  qrScanner.start({facingMode:'environment'},{fps:10,qrbox:{width:220,height:220}},onScan)
-    .then(()=>{ scanRunning=true; })
-    .catch(()=>{
-      document.getElementById('reader').innerHTML='<p style="color:var(--muted);font-size:12px;text-align:center;padding:1.5rem;">No se pudo acceder a la cámara.<br>Verificá los permisos del navegador.</p>';
-    });
-}
-function stopScanner() {
-  if (qrScanner && scanRunning) { qrScanner.stop().catch(()=>{}); scanRunning=false; }
-}
-function onScan(text) {
-  if (text !== VALID_TOKEN) return;
-  stopScanner();
+// ── FICHAR (lado empleado) ──
+const vieneDeQR = new URLSearchParams(window.location.search).get('qr')==='1';
+
+function showLoading(msg){ document.getElementById('loading-box').style.display='block'; document.getElementById('loading-msg').textContent=msg||'Procesando...'; }
+function hideLoading(){ document.getElementById('loading-box').style.display='none'; }
+
+async function procesarQR(){
   const dni = localStorage.getItem('f_my_dni');
-  if (dni) {
-    const {empleados} = getData();
-    const emp = empleados.find(e=>e.dni===dni);
-    if (emp) { fichar(emp); return; }
+  if(dni){
+    showLoading('Verificando empleado...');
+    try {
+      const data = await apiGet();
+      const emp = data.empleados.find(e=>e.dni===dni);
+      if(emp){ await fichar(emp); return; }
+    } catch(e){}
+    hideLoading();
   }
-  document.getElementById('scanner-section').style.display='none';
   document.getElementById('reg-section').style.display='block';
 }
-function registerAndFichar() {
-  const nombre = document.getElementById('f-nombre').value.trim();
-  const apellido = document.getElementById('f-apellido').value.trim();
-  const dni = document.getElementById('f-dni').value.trim();
-  if (!nombre||!apellido||!dni) { toast('Completá todos los campos','err'); return; }
-  const {empleados} = getData();
-  let emp = empleados.find(e=>e.dni===dni);
-  if (emp) {
-    // DNI ya existe — NO crear nuevo, agregar alerta de re-registro para el admin
-    const ahora = new Date();
-    const fechaStr = `${pad(ahora.getDate())}/${pad(ahora.getMonth()+1)}/${ahora.getFullYear()} ${pad(ahora.getHours())}:${pad(ahora.getMinutes())}`;
-    const alerta = `⚠ Re-registro desde nuevo dispositivo — ${fechaStr}`;
-    emp.comment = (emp.comment ? emp.comment + '\n' : '') + alerta;
-    const idx = empleados.findIndex(e=>e.dni===dni);
-    empleados[idx] = emp;
-    saveEmps(empleados);
-  } else {
-    emp = {id:uid(),nombre,apellido,dni,cargo:'',tel:'',email:'',comment:'',creado:Date.now()};
-    empleados.push(emp);
-    saveEmps(empleados);
+
+async function registerAndFichar(){
+  const nombre=document.getElementById('f-nombre').value.trim();
+  const apellido=document.getElementById('f-apellido').value.trim();
+  const dni=document.getElementById('f-dni').value.trim();
+  if(!nombre||!apellido||!dni){toast('Completá todos los campos','err');return;}
+  document.getElementById('btn-registrar').disabled=true;
+  document.getElementById('reg-section').style.display='none';
+  showLoading('Registrando empleado...');
+  try {
+    const data = await apiGet();
+    let emp = data.empleados.find(e=>e.dni===dni);
+    if(emp){
+      // Re-registro: agregar alerta
+      const ahora=new Date();
+      const fechaStr=`${pad(ahora.getDate())}/${pad(ahora.getMonth()+1)}/${ahora.getFullYear()} ${pad(ahora.getHours())}:${pad(ahora.getMinutes())}`;
+      const nuevoComment=(emp.comment?emp.comment+'\n':'')+`⚠ Re-registro desde nuevo dispositivo — ${fechaStr}`;
+      await apiPost({action:'editarEmpleado', id:emp.id, dni:emp.dni, nombre:emp.nombre, apellido:emp.apellido, cargo:emp.cargo, tel:emp.tel, email:emp.email, comment:nuevoComment, creado:emp.creado});
+      emp.comment=nuevoComment;
+    } else {
+      emp={id:uid(),nombre,apellido,dni,cargo:'',tel:'',email:'',comment:'',creado:Date.now()};
+      await apiPost({action:'registrar',...emp});
+    }
+    localStorage.setItem('f_my_dni',dni);
+    await fichar(emp);
+  } catch(e){
+    hideLoading();
+    document.getElementById('reg-section').style.display='block';
+    document.getElementById('btn-registrar').disabled=false;
+    toast('Error de conexión. Intentá de nuevo.','err');
   }
-  localStorage.setItem('f_my_dni', dni);
-  document.getElementById('reg-section').style.display='none';
-  fichar(emp);
 }
-function fichar(emp) {
-  const {fichajes,config} = getData();
-  const ahora = Date.now();
-  const d = new Date(ahora);
-  const hoy = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-  const yaFicho = fichajes.find(f=>f.dni===emp.dni&&f.fecha===hoy);
-  if (yaFicho) { showSuc(emp, new Date(yaFicho.ts), true); return; }
-  const tarde = minutesTarde(ahora, config.hora||'07:00');
-  fichajes.push({id:uid(),dni:emp.dni,nombre:emp.nombre,apellido:emp.apellido,ts:ahora,fecha:hoy,tarde,nota:''});
-  saveFichs(fichajes);
-  showSuc(emp, new Date(ahora), false);
+
+async function fichar(emp){
+  showLoading('Fichando...');
+  try {
+    const data = await apiGet();
+    const cfg = getCfg();
+    const ahora=Date.now();
+    const d=new Date(ahora);
+    const hoy=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const yaFicho=data.fichajes.find(f=>f.dni===emp.dni&&f.fecha===hoy);
+    if(yaFicho){
+      hideLoading();
+      showSuc(emp, yaFicho.hora, true);
+      return;
+    }
+    const tarde=minutesTarde(ahora, cfg.hora||'07:00');
+    const hora=`${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    await apiPost({action:'fichar', id:uid(), dni:emp.dni, nombre:emp.nombre, apellido:emp.apellido, fecha:hoy, hora, tarde, nota:''});
+    hideLoading();
+    showSuc(emp, hora, false);
+  } catch(e){
+    hideLoading();
+    toast('Error al fichar. Intentá de nuevo.','err');
+  }
 }
-function showSuc(emp, dt, yaFicho) {
-  document.getElementById('scanner-section').style.display='none';
-  document.getElementById('reg-section').style.display='none';
-  const sb = document.getElementById('success-box');
-  document.getElementById('suc-name').textContent = `${emp.nombre} ${emp.apellido}`;
-  document.getElementById('suc-time').textContent = yaFicho
-    ? `Ya fichaste hoy a las ${fmtHora(dt)}`
-    : `Fichaje registrado a las ${fmtHora(dt)}`;
+
+function showSuc(emp, hora, yaFicho){
+  const sb=document.getElementById('success-box');
+  document.getElementById('suc-name').textContent=`${emp.nombre} ${emp.apellido}`;
+  document.getElementById('suc-time').textContent=yaFicho?`Ya fichaste hoy a las ${hora}`:`Fichaje registrado a las ${hora}`;
   sb.style.display='block';
-  const vieneDeQR = new URLSearchParams(window.location.search).get('qr')==='1';
-  if (!vieneDeQR) {
-    setTimeout(()=>{
-      sb.style.display='none';
-      document.getElementById('scanner-section').style.display='block';
-      initScanner();
-    }, 4000);
-  } else {
-    // Vino del QR: después del mensaje mostrar pantalla de cierre
-    setTimeout(()=>{
-      sb.style.display='none';
-      document.getElementById('close-msg').style.display='block';
-    }, 4000);
-  }
+  setTimeout(()=>{ sb.style.display='none'; document.getElementById('close-msg').style.display='block'; }, 4000);
 }
 
 // ── AUTH ──
-let logged = false;
-function checkLogin() {
-  document.getElementById('admin-login').style.display = logged?'none':'block';
-  document.getElementById('admin-dash').style.display = logged?'block':'none';
-  if (logged) renderDashboard();
+let logged=false;
+function checkLogin(){
+  document.getElementById('admin-login').style.display=logged?'none':'block';
+  document.getElementById('admin-dash').style.display=logged?'block':'none';
+  if(logged) loadAndRenderDashboard();
 }
-function doLogin() {
-  const {config} = getData();
-  const passIngresada = document.getElementById('admin-pass').value;
-  const ok = passIngresada === (config.pass||'1614');
-  // Registrar intento
-  const intentos = LS.get('f_intentos') || [];
-  intentos.push({ ts: Date.now(), pass: passIngresada, ok });
-  LS.set('f_intentos', intentos);
-  if (ok) {
-    logged=true; document.getElementById('admin-pass').value=''; checkLogin();
-    checkBackupReminder();
-  } else {
-    toast('Contraseña incorrecta','err');
-    document.getElementById('admin-pass').value='';
-  }
+function doLogin(){
+  const cfg=getCfg();
+  const pass=document.getElementById('admin-pass').value;
+  const ok=pass===(cfg.pass||'1614');
+  const intentos=LS.get('f_intentos')||[];
+  intentos.push({ts:Date.now(),pass,ok});
+  LS.set('f_intentos',intentos);
+  if(ok){ logged=true; document.getElementById('admin-pass').value=''; checkLogin(); }
+  else { toast('Contraseña incorrecta','err'); document.getElementById('admin-pass').value=''; }
 }
-function renderSeguridad() {
-  const intentos = (LS.get('f_intentos') || []).slice().reverse();
-  document.getElementById('sec-tbody').innerHTML = intentos.map(i => {
-    const ok = i.ok;
-    return `<tr>
-      <td class="mono">${fmtDate(i.ts)}</td>
-      <td class="mono">${fmtHora(i.ts)}</td>
-      <td class="mono" style="color:${ok?'var(--muted)':'var(--danger)'};">${i.pass||'(vacío)'}</td>
-      <td>${ok?'<span class="badge badge-ok">✓ Correcto</span>':'<span class="badge badge-danger">✗ Fallido</span>'}</td>
-    </tr>`;
-  }).join('') || '<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:1.5rem;">Sin intentos registrados</td></tr>';
-}
-function borrarIntentos() {
-  if (!confirm('¿Borrar el historial de intentos?')) return;
-  localStorage.removeItem('f_intentos');
-  renderSeguridad();
-  toast('Historial borrado');
-}
-function doLogout() { logged=false; checkLogin(); }
-
-// ── BACKUP REMINDER ──
-function checkBackupReminder() {
-  const last = parseInt(localStorage.getItem('f_last_backup')||'0');
-  const ahora = Date.now();
-  const horas = Math.floor((ahora - last) / 3600000);
-  if (horas >= 24 || last === 0) {
-    const banner = document.getElementById('backup-banner');
-    if (banner) {
-      banner.style.display = 'flex';
-      banner.querySelector('span').textContent = last === 0
-        ? '⚠ Nunca exportaste un respaldo. Hacelo desde Configuración.'
-        : `⚠ Último respaldo hace ${horas} horas. Exportá uno desde Configuración.`;
-    }
-  }
-}
-function dismissBackup() {
-  document.getElementById('backup-banner').style.display='none';
-}
-function exportarDatosConTimestamp() {
-  localStorage.setItem('f_last_backup', Date.now().toString());
-  exportarDatos();
-  document.getElementById('backup-banner').style.display='none';
-  toast('Respaldo exportado');
-}
+function doLogout(){ logged=false; cache={empleados:[],fichajes:[],loaded:false}; checkLogin(); }
 
 // ── DASHBOARD ──
-function renderDashboard() {
-  const {empleados,fichajes} = getData();
-  const d = new Date();
-  const hoy = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-  const hoyF = fichajes.filter(f=>f.fecha===hoy);
-  const totalTarde = hoyF.reduce((a,f)=>a+(f.tarde||0),0);
-  const ausentes = empleados.filter(e=>!hoyF.find(f=>f.dni===e.dni)).length;
+async function loadAndRenderDashboard(){
+  document.getElementById('stats-grid').innerHTML='<div style="color:var(--muted);font-size:13px;padding:.5rem;">Cargando...</div>';
+  try { await apiGet(); } catch(e){ toast('Error al cargar datos','err'); return; }
+  renderDashboard();
+}
+function renderDashboard(){
+  const {empleados,fichajes}=cache;
+  const d=new Date();
+  const hoy=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  const hoyF=fichajes.filter(f=>f.fecha===hoy);
+  const totalTarde=hoyF.reduce((a,f)=>a+(f.tarde||0),0);
+  const ausentes=empleados.filter(e=>!hoyF.find(f=>f.dni===e.dni)).length;
   document.getElementById('stats-grid').innerHTML=`
     <div class="stat"><div class="lbl">Empleados</div><div class="val val-acc">${empleados.length}</div><div class="sub">registrados</div></div>
     <div class="stat"><div class="lbl">Ficharon hoy</div><div class="val val-info">${hoyF.length}</div><div class="sub">de ${empleados.length}</div></div>
     <div class="stat"><div class="lbl">Ausentes hoy</div><div class="val val-danger">${ausentes}</div><div class="sub">sin fichar</div></div>
     <div class="stat"><div class="lbl">Min. tarde hoy</div><div class="val val-warn">${totalTarde}</div><div class="sub">total acumulado</div></div>
   `;
-  // Alertas de re-registro
-  const reRegs = empleados.filter(e=>e.comment&&e.comment.includes('⚠ Re-registro'));
-  const reregBanner = document.getElementById('rereg-banner');
-  if (reRegs.length) {
-    reregBanner.style.display='block';
-    document.getElementById('rereg-list').innerHTML = reRegs.map(e=>{
-      const lines = e.comment.split('\n').filter(l=>l.includes('⚠ Re-registro'));
-      return lines.map(l=>`<div style="padding:2px 0;">→ <strong>${e.nombre} ${e.apellido}</strong> (DNI ${e.dni}): ${l.replace('⚠ Re-registro desde nuevo dispositivo — ','')}</div>`).join('');
+  // Re-registro alerts
+  const reRegs=empleados.filter(e=>e.comment&&e.comment.includes('⚠ Re-registro'));
+  const rb=document.getElementById('rereg-banner');
+  if(reRegs.length){
+    rb.style.display='block';
+    document.getElementById('rereg-list').innerHTML=reRegs.map(e=>{
+      const lines=e.comment.split('\n').filter(l=>l.includes('⚠ Re-registro'));
+      return lines.map(l=>`<div>→ <strong>${e.nombre} ${e.apellido}</strong> (DNI ${e.dni}): ${l.replace('⚠ Re-registro desde nuevo dispositivo — ','')}</div>`).join('');
     }).join('');
-  } else { reregBanner.style.display='none'; }
-
-  const recientes = [...fichajes].sort((a,b)=>b.ts-a.ts).slice(0,15);
-  document.getElementById('recent-tbody').innerHTML = recientes.map(f=>{
+  } else rb.style.display='none';
+  const recientes=[...fichajes].sort((a,b)=>b.fecha.localeCompare(a.fecha)||b.hora.localeCompare(a.hora)).slice(0,15);
+  document.getElementById('recent-tbody').innerHTML=recientes.map(f=>{
     const t=f.tarde||0;
-    return `<tr><td>${f.nombre} ${f.apellido}</td><td class="mono">${f.dni}</td><td class="mono">${fmtDate(f.ts)}</td><td class="mono">${fmtHora(f.ts)}</td><td>${t===0?'<span class="badge badge-ok">A tiempo</span>':`<span class="badge badge-warn">${t} min</span>`}</td></tr>`;
+    return `<tr><td>${f.nombre} ${f.apellido}</td><td class="mono">${f.dni}</td><td class="mono">${f.fecha}</td><td class="mono">${f.hora}</td><td>${t===0?'<span class="badge badge-ok">A tiempo</span>':`<span class="badge badge-warn">${t} min</span>`}</td></tr>`;
   }).join('')||'<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:1.5rem;">Sin fichajes aún</td></tr>';
 }
 
 // ── EMPLEADOS ──
+async function loadAndRenderEmpleados(){
+  document.getElementById('emp-grid').innerHTML='<p style="color:var(--muted);font-size:13px;">Cargando...</p>';
+  try { await apiGet(); } catch(e){ toast('Error al cargar','err'); return; }
+  renderEmpleados();
+}
 let editEmpId=null;
-function renderEmpleados() {
-  const {empleados,fichajes}=getData();
+function renderEmpleados(){
+  const {empleados,fichajes}=cache;
   const q=(document.getElementById('emp-search')?.value||'').toLowerCase();
   const list=empleados.filter(e=>`${e.nombre} ${e.apellido} ${e.dni}`.toLowerCase().includes(q));
   const grid=document.getElementById('emp-grid');
   if(!list.length){grid.innerHTML='<p style="color:var(--muted);font-size:13px;">Sin resultados.</p>';return;}
   grid.innerHTML=list.map(e=>{
-    const last=fichajes.filter(f=>f.dni===e.dni).sort((a,b)=>b.ts-a.ts)[0];
+    const last=fichajes.filter(f=>f.dni===e.dni).sort((a,b)=>b.fecha.localeCompare(a.fecha)||b.hora.localeCompare(a.hora))[0];
     return `<div class="emp-card">
       <div class="emp-head">
         <div class="emp-avatar">${initials(e.nombre,e.apellido)}</div>
-        <div>
-          <div class="emp-name">${e.nombre} ${e.apellido}</div>
-          <div class="emp-dni">DNI ${e.dni}${e.cargo?' · '+e.cargo:''}</div>
-        </div>
+        <div><div class="emp-name">${e.nombre} ${e.apellido}</div><div class="emp-dni">DNI ${e.dni}${e.cargo?' · '+e.cargo:''}</div></div>
       </div>
       ${e.tel?`<div style="font-size:12px;color:var(--muted);margin-bottom:2px;">📞 ${e.tel}</div>`:''}
       ${e.email?`<div style="font-size:12px;color:var(--muted);margin-bottom:2px;">✉ ${e.email}</div>`:''}
-      <div style="font-size:11px;color:var(--muted);margin-top:.35rem;">Último fichaje: ${last?fmtDate(last.ts)+' '+fmtHora(last.ts):'nunca'}</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:.35rem;">Último fichaje: ${last?last.fecha+' '+last.hora:'nunca'}</div>
       ${e.comment?`<div class="emp-comment">${e.comment}</div>`:''}
       <div class="emp-actions">
         <button class="btn btn-ghost btn-xs" onclick="openEditEmp('${e.id}')">✎ Editar</button>
@@ -679,109 +607,77 @@ function openAddEmp(){
   openModal('modal-emp');
 }
 function openEditEmp(id){
-  const {empleados}=getData();
-  const e=empleados.find(x=>x.id===id); if(!e)return;
+  const emp=cache.empleados.find(e=>e.id===id); if(!emp)return;
   editEmpId=id;
   document.getElementById('modal-emp-title').textContent='Editar empleado';
-  document.getElementById('me-nombre').value=e.nombre||'';
-  document.getElementById('me-apellido').value=e.apellido||'';
-  document.getElementById('me-dni').value=e.dni||'';
-  document.getElementById('me-cargo').value=e.cargo||'';
-  document.getElementById('me-tel').value=e.tel||'';
-  document.getElementById('me-email').value=e.email||'';
-  document.getElementById('me-comment').value=e.comment||'';
+  document.getElementById('me-nombre').value=emp.nombre||'';
+  document.getElementById('me-apellido').value=emp.apellido||'';
+  document.getElementById('me-dni').value=emp.dni||'';
+  document.getElementById('me-cargo').value=emp.cargo||'';
+  document.getElementById('me-tel').value=emp.tel||'';
+  document.getElementById('me-email').value=emp.email||'';
+  document.getElementById('me-comment').value=emp.comment||'';
   openModal('modal-emp');
 }
-function saveEmp(){
+async function saveEmp(){
   const nombre=document.getElementById('me-nombre').value.trim();
   const apellido=document.getElementById('me-apellido').value.trim();
   const dni=document.getElementById('me-dni').value.trim();
   if(!nombre||!apellido||!dni){toast('Nombre, apellido y DNI son obligatorios','err');return;}
-  const {empleados}=getData();
-  if(editEmpId){
-    const i=empleados.findIndex(e=>e.id===editEmpId);
-    if(i>-1) empleados[i]={...empleados[i],nombre,apellido,dni,cargo:document.getElementById('me-cargo').value.trim(),tel:document.getElementById('me-tel').value.trim(),email:document.getElementById('me-email').value.trim(),comment:document.getElementById('me-comment').value.trim()};
-  } else {
-    if(empleados.find(e=>e.dni===dni)){toast('Ya existe un empleado con ese DNI','err');return;}
-    empleados.push({id:uid(),nombre,apellido,dni,cargo:document.getElementById('me-cargo').value.trim(),tel:document.getElementById('me-tel').value.trim(),email:document.getElementById('me-email').value.trim(),comment:document.getElementById('me-comment').value.trim(),creado:Date.now()});
-  }
-  saveEmps(empleados); closeModal('modal-emp'); renderEmpleados(); toast('Empleado guardado');
+  const btn=document.getElementById('btn-save-emp'); btn.disabled=true; btn.textContent='Guardando...';
+  const data={nombre,apellido,dni,cargo:document.getElementById('me-cargo').value.trim(),tel:document.getElementById('me-tel').value.trim(),email:document.getElementById('me-email').value.trim(),comment:document.getElementById('me-comment').value.trim()};
+  try {
+    if(editEmpId){
+      const emp=cache.empleados.find(e=>e.id===editEmpId);
+      await apiPost({action:'editarEmpleado',id:editEmpId,...data,creado:emp.creado});
+    } else {
+      if(cache.empleados.find(e=>e.dni===dni)){toast('Ya existe un empleado con ese DNI','err');btn.disabled=false;btn.textContent='Guardar';return;}
+      await apiPost({action:'registrar',id:uid(),...data,creado:Date.now()});
+    }
+    closeModal('modal-emp'); toast('Empleado guardado');
+    await apiGet(); renderEmpleados();
+  } catch(e){ toast('Error al guardar','err'); }
+  btn.disabled=false; btn.textContent='Guardar';
 }
-function deleteEmp(id){
+async function deleteEmp(id){
   if(!confirm('¿Eliminar este empleado? Sus fichajes se conservarán.'))return;
-  const {empleados}=getData();
-  saveEmps(empleados.filter(e=>e.id!==id)); renderEmpleados(); toast('Empleado eliminado');
+  try {
+    await apiPost({action:'eliminarEmpleado',id});
+    toast('Empleado eliminado');
+    await apiGet(); renderEmpleados();
+  } catch(e){ toast('Error al eliminar','err'); }
 }
-function filtrarPorEmp(dni){
-  document.getElementById('reg-search').value=dni;
-  showAsec('sec-registros');
-}
+function filtrarPorEmp(dni){ document.getElementById('reg-search').value=dni; showAsec('sec-registros'); }
 
 // ── REGISTROS ──
-let editRegId=null;
+async function loadAndRenderRegistros(){
+  document.getElementById('reg-tbody').innerHTML='<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:1.5rem;">Cargando...</td></tr>';
+  try { await apiGet(); } catch(e){ toast('Error al cargar','err'); return; }
+  renderRegistros();
+}
 function renderRegistros(){
-  const {fichajes}=getData();
   const q=(document.getElementById('reg-search')?.value||'').toLowerCase();
-  const list=[...fichajes].filter(f=>`${f.nombre} ${f.apellido} ${f.dni} ${f.fecha}`.toLowerCase().includes(q)).sort((a,b)=>b.ts-a.ts);
+  const list=[...cache.fichajes].filter(f=>`${f.nombre} ${f.apellido} ${f.dni} ${f.fecha}`.toLowerCase().includes(q)).sort((a,b)=>b.fecha.localeCompare(a.fecha)||b.hora.localeCompare(a.hora));
   document.getElementById('reg-tbody').innerHTML=list.map(f=>{
     const t=f.tarde||0;
-    return `<tr>
-      <td>${f.nombre} ${f.apellido}</td><td class="mono">${f.dni}</td>
-      <td class="mono">${fmtDate(f.ts)}</td><td class="mono">${fmtHora(f.ts)}</td>
-      <td>${t===0?'<span class="badge badge-ok">0</span>':`<span class="badge badge-warn">${t}</span>`}${f.nota?` <span style="color:var(--muted);font-size:11px;">${f.nota}</span>`:''}</td>
-      <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-xs" onclick="openEditReg('${f.id}')">✎</button><button class="btn btn-danger btn-xs" onclick="deleteReg('${f.id}')">✕</button></td>
-    </tr>`;
+    return `<tr><td>${f.nombre} ${f.apellido}</td><td class="mono">${f.dni}</td><td class="mono">${f.fecha}</td><td class="mono">${f.hora}</td><td>${t===0?'<span class="badge badge-ok">0</span>':`<span class="badge badge-warn">${t}</span>`}</td><td style="font-size:11px;color:var(--muted);">${f.nota||''}</td></tr>`;
   }).join('')||'<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:1.5rem;">Sin registros</td></tr>';
-}
-function openEditReg(id){
-  const {fichajes}=getData();
-  const f=fichajes.find(r=>r.id===id); if(!f)return;
-  editRegId=id;
-  const dt=new Date(f.ts);
-  document.getElementById('mr-fecha').value=`${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}`;
-  document.getElementById('mr-hora').value=`${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
-  document.getElementById('mr-nota').value=f.nota||'';
-  openModal('modal-reg');
-}
-function saveReg(){
-  const {fichajes,config}=getData();
-  const i=fichajes.findIndex(r=>r.id===editRegId); if(i<0)return;
-  const fecha=document.getElementById('mr-fecha').value;
-  const hora=document.getElementById('mr-hora').value;
-  const ts=new Date(`${fecha}T${hora}:00`).getTime();
-  fichajes[i]={...fichajes[i],ts,fecha,tarde:minutesTarde(ts,config.hora||'07:00'),nota:document.getElementById('mr-nota').value.trim()};
-  saveFichs(fichajes); closeModal('modal-reg'); renderRegistros(); toast('Fichaje actualizado');
-}
-function deleteReg(id){
-  if(!confirm('¿Eliminar este fichaje?'))return;
-  const {fichajes}=getData();
-  saveFichs(fichajes.filter(f=>f.id!==id)); renderRegistros(); toast('Fichaje eliminado');
 }
 
 // ── REPORTE ──
-function initPeriod(){
-  const n=new Date();
-  document.getElementById('rpt-mes').value=n.getMonth();
-  document.getElementById('rpt-year').value=n.getFullYear();
-  document.getElementById('rpt-q').value=n.getDate()<=15?'1':'2';
-}
-function generarReporte(){
-  const {empleados,fichajes,config}=getData();
+function initPeriod(){ const n=new Date(); document.getElementById('rpt-mes').value=n.getMonth(); document.getElementById('rpt-year').value=n.getFullYear(); document.getElementById('rpt-q').value=n.getDate()<=15?'1':'2'; }
+async function generarReporte(){
   const q=parseInt(document.getElementById('rpt-q').value);
   const mes=parseInt(document.getElementById('rpt-mes').value);
   const year=parseInt(document.getElementById('rpt-year').value);
-  const dIni=q===1?1:16;
-  const dFin=q===1?15:new Date(year,mes+1,0).getDate();
-  const dias=[];
-  for(let d=dIni;d<=dFin;d++){
-    const dt=new Date(year,mes,d);
-    dias.push({dt,str:`${year}-${pad(mes+1)}-${pad(d)}`});
-  }
-  // Días donde NADIE fichó = no laborable
+  document.getElementById('reporte-output').innerHTML='<p style="color:var(--muted);font-size:13px;">Cargando datos...</p>';
+  try { await apiGet(); } catch(e){ toast('Error al cargar datos','err'); return; }
+  const {empleados,fichajes}=cache;
+  const dIni=q===1?1:16, dFin=q===1?15:new Date(year,mes+1,0).getDate();
+  const dias=[]; for(let d=dIni;d<=dFin;d++){ const dt=new Date(year,mes,d); dias.push({dt,str:`${year}-${pad(mes+1)}-${pad(d)}`}); }
   const noLab=new Set(dias.filter(({str})=>!fichajes.find(f=>f.fecha===str)).map(d=>d.str));
   const lab=dias.filter(d=>!noLab.has(d.str));
   if(!empleados.length){document.getElementById('reporte-output').innerHTML='<p style="color:var(--muted);">Sin empleados registrados.</p>';return;}
-
   let html=`<div class="card" style="margin-bottom:1rem;">
     <div style="display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:.75rem;">
       <div><div style="font-size:11px;color:var(--muted);">QUINCENA</div><div style="font-size:18px;font-family:var(--mono);color:var(--acc);">${q===1?'1–15':'16–'+dFin} ${MESES_ES[mes]} ${year}</div></div>
@@ -790,28 +686,19 @@ function generarReporte(){
     </div>
     <div style="font-size:11px;color:var(--muted);">No laborables: ${[...noLab].map(s=>{const dt=new Date(s+'T12:00');return `${DIAS_ES[dt.getDay()]} ${dt.getDate()}`;}).join(', ')||'ninguno'}</div>
   </div>`;
-
   empleados.forEach(emp=>{
     const ef=fichajes.filter(f=>f.dni===emp.dni);
     let totalT=0,aus=0,rows='';
     lab.forEach(({dt,str})=>{
       const f=ef.find(fi=>fi.fecha===str);
-      if(f){
-        totalT+=f.tarde||0;
-        rows+=`<div class="day-row"><span class="day-date">${DIAS_ES[dt.getDay()]} ${pad(dt.getDate())}</span><span class="day-time">${fmtHora(f.ts)}</span><span>${f.tarde>0?`<span class="badge badge-warn">${f.tarde} min tarde</span>`:'<span class="badge badge-ok">✓ a tiempo</span>'}${f.nota?` <span style="font-size:11px;color:var(--muted);">${f.nota}</span>`:''}</span></div>`;
-      } else {
-        aus++;
-        rows+=`<div class="day-row"><span class="day-date">${DIAS_ES[dt.getDay()]} ${pad(dt.getDate())}</span><span class="day-time" style="color:var(--muted);">—</span><span style="color:var(--danger);font-size:12px;">✗ Ausente</span></div>`;
-      }
+      if(f){ totalT+=f.tarde||0; rows+=`<div class="day-row"><span class="day-date">${DIAS_ES[dt.getDay()]} ${pad(dt.getDate())}</span><span class="day-time">${f.hora}</span><span>${f.tarde>0?`<span class="badge badge-warn">${f.tarde} min tarde</span>`:'<span class="badge badge-ok">✓ a tiempo</span>'}${f.nota?` <span style="font-size:11px;color:var(--muted);">${f.nota}</span>`:''}</span></div>`; }
+      else { aus++; rows+=`<div class="day-row"><span class="day-date">${DIAS_ES[dt.getDay()]} ${pad(dt.getDate())}</span><span class="day-time" style="color:var(--muted);">—</span><span style="color:var(--danger);font-size:12px;">✗ Ausente</span></div>`; }
     });
     html+=`<div class="card" style="margin-bottom:.875rem;">
       <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.875rem;flex-wrap:wrap;">
         <div class="emp-avatar" style="width:36px;height:36px;font-size:13px;">${initials(emp.nombre,emp.apellido)}</div>
         <div><div style="font-size:14px;font-weight:600;">${emp.nombre} ${emp.apellido}</div><div style="font-size:11px;color:var(--muted);">DNI ${emp.dni}${emp.cargo?' · '+emp.cargo:''}</div></div>
-        <div style="margin-left:auto;display:flex;gap:.4rem;flex-wrap:wrap;">
-          ${aus===0?'<span class="badge badge-ok">Sin ausencias</span>':`<span class="badge badge-danger">${aus} ausencia${aus>1?'s':''}</span>`}
-          ${totalT===0?'<span class="badge badge-ok">Sin tardanzas</span>':`<span class="badge badge-warn">${totalT} min tarde</span>`}
-        </div>
+        <div style="margin-left:auto;display:flex;gap:.4rem;flex-wrap:wrap;">${aus===0?'<span class="badge badge-ok">Sin ausencias</span>':`<span class="badge badge-danger">${aus} ausencia${aus>1?'s':''}</span>`} ${totalT===0?'<span class="badge badge-ok">Sin tardanzas</span>':`<span class="badge badge-warn">${totalT} min tarde</span>`}</div>
       </div>
       ${rows}
       <div style="margin-top:.875rem;padding-top:.875rem;border-top:1px solid var(--bd);display:flex;gap:1.5rem;font-size:12px;color:var(--muted);flex-wrap:wrap;">
@@ -828,91 +715,45 @@ function generarReporte(){
 let qrDone=false;
 function renderQR(){
   if(qrDone)return;
-  const url='https://fabricamas.github.io/Fichaje/fichaje.html?qr=1';
-  new QRCode(document.getElementById('qrcode'),{text:url,width:220,height:220,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});
+  new QRCode(document.getElementById('qrcode'),{text:APP_URL+'?qr=1',width:220,height:220,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});
   qrDone=true;
 }
 
 // ── CONFIG ──
-function loadConfig(){
-  const {config}=getData();
-  document.getElementById('cfg-hora').value=config.hora||'07:00';
-  document.getElementById('cfg-empresa').value=config.empresa||'';
-  document.getElementById('cfg-pass').value='';
-  document.getElementById('cfg-pass2').value='';
-}
+function loadConfig(){ const c=getCfg(); document.getElementById('cfg-hora').value=c.hora||'07:00'; document.getElementById('cfg-empresa').value=c.empresa||''; document.getElementById('cfg-pass').value=''; document.getElementById('cfg-pass2').value=''; }
 function saveConfig(){
-  const {config}=getData();
-  const p1=document.getElementById('cfg-pass').value;
-  const p2=document.getElementById('cfg-pass2').value;
+  const c=getCfg();
+  const p1=document.getElementById('cfg-pass').value, p2=document.getElementById('cfg-pass2').value;
   if(p1&&p1!==p2){toast('Las contraseñas no coinciden','err');return;}
-  config.hora=document.getElementById('cfg-hora').value||'07:00';
-  config.empresa=document.getElementById('cfg-empresa').value.trim();
-  if(p1)config.pass=p1;
-  saveCfg(config); toast('Configuración guardada');
+  c.hora=document.getElementById('cfg-hora').value||'07:00';
+  c.empresa=document.getElementById('cfg-empresa').value.trim();
+  if(p1)c.pass=p1;
+  saveCfg(c); toast('Configuración guardada');
 }
 
-// ── EXPORT/IMPORT ──
-function exportarDatos(){
-  localStorage.setItem('f_last_backup', Date.now().toString());
-  const d={empleados:LS.get('f_emps'),fichajes:LS.get('f_fichs'),config:LS.get('f_cfg')};
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));
-  a.download=`fichaje_backup_${new Date().toISOString().slice(0,10)}.json`; a.click();
-}
-function importarDatos(){document.getElementById('import-file').click();}
-function processImport(e){
-  const file=e.target.files[0]; if(!file)return;
-  const r=new FileReader();
-  r.onload=ev=>{
-    try{
-      const d=JSON.parse(ev.target.result);
-      if(d.empleados)saveEmps(d.empleados);
-      if(d.fichajes)saveFichs(d.fichajes);
-      if(d.config)saveCfg(d.config);
-      toast('Datos importados'); renderDashboard();
-    }catch{toast('Archivo inválido','err');}
-  };
-  r.readAsText(file);
-}
+// ── EXPORT ──
 function exportCSV(){
-  const {fichajes}=getData();
   const rows=[['Nombre','Apellido','DNI','Fecha','Hora','Min.Tarde','Nota']];
-  [...fichajes].sort((a,b)=>b.ts-a.ts).forEach(f=>rows.push([f.nombre,f.apellido,f.dni,fmtDate(f.ts),fmtHora(f.ts),f.tarde||0,f.nota||'']));
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n')],{type:'text/csv'}));
-  a.download=`fichajes_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+  [...cache.fichajes].sort((a,b)=>b.fecha.localeCompare(a.fecha)).forEach(f=>rows.push([f.nombre,f.apellido,f.dni,f.fecha,f.hora,f.tarde||0,f.nota||'']));
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n')],{type:'text/csv'})); a.download=`fichajes_${new Date().toISOString().slice(0,10)}.csv`; a.click();
 }
-function borrarTodo(){
-  if(!confirm('¿Borrar TODOS los datos? Esta acción no se puede deshacer.'))return;
-  ['f_emps','f_fichs','f_cfg','f_my_dni'].forEach(k=>localStorage.removeItem(k));
-  toast('Datos eliminados'); renderDashboard();
+function exportEmpleadosCSV(){
+  const rows=[['Nombre','Apellido','DNI','Cargo','Tel','Email','Comentarios']];
+  cache.empleados.forEach(e=>rows.push([e.nombre,e.apellido,e.dni,e.cargo||'',e.tel||'',e.email||'',e.comment||'']));
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n')],{type:'text/csv'})); a.download=`empleados_${new Date().toISOString().slice(0,10)}.csv`; a.click();
 }
+
+// ── SEGURIDAD ──
+function renderSeguridad(){
+  const intentos=(LS.get('f_intentos')||[]).slice().reverse();
+  document.getElementById('sec-tbody').innerHTML=intentos.map(i=>`<tr><td class="mono">${fmtDate(i.ts)}</td><td class="mono">${fmtHora(i.ts)}</td><td class="mono" style="color:${i.ok?'var(--muted)':'var(--danger)'};">${i.pass||'(vacío)'}</td><td>${i.ok?'<span class="badge badge-ok">✓ Correcto</span>':'<span class="badge badge-danger">✗ Fallido</span>'}</td></tr>`).join('')||'<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:1.5rem;">Sin intentos registrados</td></tr>';
+}
+function borrarIntentos(){ if(!confirm('¿Borrar el historial?'))return; localStorage.removeItem('f_intentos'); renderSeguridad(); toast('Historial borrado'); }
 
 // ── INIT ──
 startClock();
 initPeriod();
-
-// Si viene del QR (parámetro ?qr=1), arrancar fichaje directo sin scanner
-const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get('qr') === '1') {
-  // No iniciar scanner, procesar como si hubiera escaneado el QR
-  const dni = localStorage.getItem('f_my_dni');
-  if (dni) {
-    const {empleados} = getData();
-    const emp = empleados.find(e=>e.dni===dni);
-    if (emp) { fichar(emp); }
-    else {
-      document.getElementById('scanner-section').style.display='none';
-      document.getElementById('reg-section').style.display='block';
-    }
-  } else {
-    document.getElementById('scanner-section').style.display='none';
-    document.getElementById('reg-section').style.display='block';
-  }
-} else {
-  initScanner();
-}
+if(vieneDeQR){ procesarQR(); }
 </script>
 </body>
 </html>
