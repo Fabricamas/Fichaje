@@ -190,7 +190,10 @@ tr:hover td{background:rgba(255,255,255,.02);}
       </div>
       <div class="stats-grid" id="stats-grid"></div>
       <div class="card">
-        <h3>Últimos fichajes</h3>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.875rem;">
+          <h3 style="margin:0;">Últimos fichajes</h3>
+          <button class="btn btn-danger btn-xs" onclick="borrarTodosRegistros()">🗑 Borrar todos los registros</button>
+        </div>
         <div class="tbl-wrap"><table>
           <thead><tr><th>Empleado</th><th>DNI</th><th>Fecha</th><th>Hora</th><th>Estado</th></tr></thead>
           <tbody id="recent-tbody"></tbody>
@@ -221,7 +224,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
       </div>
       <div class="card" style="padding:.75rem;">
         <div class="tbl-wrap"><table>
-          <thead><tr><th>Empleado</th><th>DNI</th><th>Fecha</th><th>Hora</th><th>Min. tarde</th><th>Nota</th></tr></thead>
+          <thead><tr><th>Empleado</th><th>DNI</th><th>Fecha</th><th>Hora</th><th>Min. tarde</th><th>Acciones</th></tr></thead>
           <tbody id="reg-tbody"></tbody>
         </table></div>
       </div>
@@ -300,7 +303,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
       </div>
       <div class="card" style="padding:.75rem;">
         <div class="tbl-wrap"><table>
-          <thead><tr><th>Fecha</th><th>Hora</th><th>Contraseña ingresada</th><th>Resultado</th></tr></thead>
+          <thead><tr><th>Fecha</th><th>Hora</th><th>Contraseña ingresada</th><th>Empleado coincidente</th><th>Resultado</th></tr></thead>
           <tbody id="sec-tbody"></tbody>
         </table></div>
       </div>
@@ -309,6 +312,20 @@ tr:hover td{background:rgba(255,255,255,.02);}
   </div>
 </div>
 </main>
+</div>
+
+<!-- MODAL FICHAJES EMPLEADO -->
+<div class="modal-overlay" id="modal-fichs-emp">
+  <div class="modal" style="max-width:600px;">
+    <h2 id="modal-fichs-title">Fichajes</h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Fecha</th><th>Hora</th><th>Min. tarde</th><th>Eliminar</th></tr></thead>
+      <tbody id="fichs-emp-tbody"></tbody>
+    </table></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-fichs-emp')">Cerrar</button>
+    </div>
+  </div>
 </div>
 
 <!-- MODAL EMPLEADO -->
@@ -338,7 +355,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
 <div class="toast" id="toast"></div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxATU52g9OKEGROyydcIkXddYCo6-RaLNtfeVoWlvTyfEEZ6W58EyT5NABwBD8a97T_jA/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwMWPFjgI-BICUFM_Fy233_6bVSJXBP3lAcVHV02KSykvu4a6eltH_vXAe7UMwBxQw6QQ/exec';
 const APP_URL = 'https://fabricamas.github.io/Fichaje/fichaje.html';
 const WORK_LAT = -34.44182796391336;
 const WORK_LNG = -58.57176751896773;
@@ -729,7 +746,29 @@ async function deleteEmp(id){
     await apiGet(); renderEmpleados();
   } catch(e){ toast('Error al eliminar','err'); }
 }
-function filtrarPorEmp(dni){ document.getElementById('reg-search').value=dni; showAsec('sec-registros'); }
+function filtrarPorEmp(dni){
+  const emp=cache.empleados.find(e=>e.dni===dni);
+  if(!emp)return;
+  const fichs=cache.fichajes.filter(f=>f.dni===dni).sort((a,b)=>b.fecha.localeCompare(a.fecha)||b.hora.localeCompare(a.hora));
+  document.getElementById('modal-fichs-title').textContent=`Fichajes — ${emp.nombre} ${emp.apellido}`;
+  document.getElementById('fichs-emp-tbody').innerHTML=fichs.map(f=>{
+    const t=f.tarde||0;
+    return `<tr>
+      <td class="mono">${f.fecha}</td>
+      <td class="mono">${f.hora}</td>
+      <td>${t===0?'<span class="badge badge-ok">A tiempo</span>':`<span class="badge badge-warn">${t} min</span>`}</td>
+      <td><button class="btn btn-danger btn-xs" onclick="eliminarFichajeModal('${f.id}','${dni}')">✕</button></td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:1rem;">Sin fichajes</td></tr>';
+  openModal('modal-fichs-emp');
+}
+async function eliminarFichajeModal(id,dni){
+  if(!confirm('¿Eliminar este fichaje?'))return;
+  try {
+    await apiPost({action:'eliminarFichaje',id});
+    await apiGet(); filtrarPorEmp(dni); toast('Fichaje eliminado');
+  } catch(e){ toast('Error al eliminar','err'); }
+}
 
 // ── REGISTROS ──
 async function loadAndRenderRegistros(){
@@ -742,8 +781,27 @@ function renderRegistros(){
   const list=[...cache.fichajes].filter(f=>`${f.nombre} ${f.apellido} ${f.dni} ${f.fecha}`.toLowerCase().includes(q)).sort((a,b)=>b.fecha.localeCompare(a.fecha)||b.hora.localeCompare(a.hora));
   document.getElementById('reg-tbody').innerHTML=list.map(f=>{
     const t=f.tarde||0;
-    return `<tr><td>${f.nombre} ${f.apellido}</td><td class="mono">${f.dni}</td><td class="mono">${f.fecha}</td><td class="mono">${f.hora}</td><td>${t===0?'<span class="badge badge-ok">0</span>':`<span class="badge badge-warn">${t}</span>`}</td><td style="font-size:11px;color:var(--muted);">${f.nota||''}</td></tr>`;
+    return `<tr>
+      <td>${f.nombre} ${f.apellido}</td><td class="mono">${f.dni}</td>
+      <td class="mono">${f.fecha}</td><td class="mono">${f.hora}</td>
+      <td>${t===0?'<span class="badge badge-ok">0</span>':`<span class="badge badge-warn">${t}</span>`}</td>
+      <td><button class="btn btn-danger btn-xs" onclick="eliminarFichaje('${f.id}')">✕</button></td>
+    </tr>`;
   }).join('')||'<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:1.5rem;">Sin registros</td></tr>';
+}
+async function eliminarFichaje(id){
+  if(!confirm('¿Eliminar este fichaje?'))return;
+  try {
+    await apiPost({action:'eliminarFichaje',id});
+    await apiGet(); renderRegistros(); toast('Fichaje eliminado');
+  } catch(e){ toast('Error al eliminar','err'); }
+}
+async function borrarTodosRegistros(){
+  if(!confirm('¿Borrar TODOS los registros? Esta acción no se puede deshacer.'))return;
+  try {
+    await apiPost({action:'borrarTodosFichajes'});
+    await apiGet(); renderDashboard(); toast('Todos los registros eliminados');
+  } catch(e){ toast('Error al borrar','err'); }
 }
 
 // ── REPORTE ──
@@ -828,7 +886,20 @@ function exportEmpleadosCSV(){
 // ── SEGURIDAD ──
 function renderSeguridad(){
   const intentos=(LS.get('f_intentos')||[]).slice().reverse();
-  document.getElementById('sec-tbody').innerHTML=intentos.map(i=>`<tr><td class="mono">${fmtDate(i.ts)}</td><td class="mono">${fmtHora(i.ts)}</td><td class="mono" style="color:${i.ok?'var(--muted)':'var(--danger)'};">${i.pass||'(vacío)'}</td><td>${i.ok?'<span class="badge badge-ok">✓ Correcto</span>':'<span class="badge badge-danger">✗ Fallido</span>'}</td></tr>`).join('')||'<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:1.5rem;">Sin intentos registrados</td></tr>';
+  document.getElementById('sec-tbody').innerHTML=intentos.map(i=>{
+    // Buscar si la contraseña coincide con el DNI de algún empleado
+    const empMatch = cache.empleados.find(e=>e.dni===i.pass);
+    const empCell = empMatch
+      ? `<span style="color:var(--danger);font-weight:600;">⚠ ${empMatch.nombre} ${empMatch.apellido}</span>`
+      : `<span style="color:var(--muted);font-size:11px;">—</span>`;
+    return `<tr>
+      <td class="mono">${fmtDate(i.ts)}</td>
+      <td class="mono">${fmtHora(i.ts)}</td>
+      <td class="mono" style="color:${i.ok?'var(--muted)':'var(--danger)'};">${i.pass||'(vacío)'}</td>
+      <td>${empCell}</td>
+      <td>${i.ok?'<span class="badge badge-ok">✓ Correcto</span>':'<span class="badge badge-danger">✗ Fallido</span>'}</td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:1.5rem;">Sin intentos registrados</td></tr>';
 }
 function borrarIntentos(){ if(!confirm('¿Borrar el historial?'))return; localStorage.removeItem('f_intentos'); renderSeguridad(); toast('Historial borrado'); }
 
