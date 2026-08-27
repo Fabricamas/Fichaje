@@ -166,7 +166,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
       <h1>Ingresá</h1>
       <p>Acceso exclusivo para el administrador.</p>
       <div class="field"><label>Contraseña</label><input id="admin-pass" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
-      <button class="btn btn-acc btn-full" style="margin-top:.25rem;" onclick="doLogin()">Entrar</button>
+      <button class="btn btn-acc btn-full" id="btn-login" style="margin-top:.25rem;" onclick="doLogin()">Entrar</button>
     </div>
   </div>
 
@@ -629,17 +629,17 @@ async function doLogin(){
   const pass=document.getElementById('admin-pass').value;
   const ok=pass===(cfg.pass||'1614');
   document.getElementById('admin-pass').value='';
-  // Cargar empleados si no están en cache
-  if(!cache.loaded){
-    try { await apiGet(); } catch(e){}
-  }
+  const btnLogin=document.getElementById('btn-login');
+  btnLogin.disabled=true; btnLogin.textContent='Verificando...';
+  // Siempre cargar empleados frescos para identificar correctamente
+  try { await apiGet(); } catch(e){}
+  btnLogin.disabled=false; btnLogin.textContent='Entrar';
   const ahora=new Date();
   const fecha=`${pad(ahora.getDate())}/${pad(ahora.getMonth()+1)}/${ahora.getFullYear()}`;
   const hora=`${pad(ahora.getHours())}:${pad(ahora.getMinutes())}`;
   // Detectar empleado por DNI guardado en este dispositivo
   const dniGuardado=localStorage.getItem('f_my_dni');
   const empDevice=dniGuardado?cache.empleados.find(e=>e.dni===dniGuardado):null;
-  // También verificar si la contraseña ingresada es un DNI conocido
   const empByPass=cache.empleados.find(e=>e.dni===pass);
   const empDetectado=empDevice||empByPass;
   const empleado=empDetectado
