@@ -629,15 +629,22 @@ async function doLogin(){
   const pass=document.getElementById('admin-pass').value;
   const ok=pass===(cfg.pass||'1614');
   document.getElementById('admin-pass').value='';
-  // Si no tenemos empleados cargados, los buscamos para detectar coincidencia
+  // Cargar empleados si no están en cache
   if(!cache.loaded){
     try { await apiGet(); } catch(e){}
   }
   const ahora=new Date();
   const fecha=`${pad(ahora.getDate())}/${pad(ahora.getMonth()+1)}/${ahora.getFullYear()}`;
   const hora=`${pad(ahora.getHours())}:${pad(ahora.getMinutes())}`;
-  const empMatch=cache.empleados.find(e=>e.dni===pass);
-  const empleado=empMatch?encodeURIComponent(`${empMatch.nombre} ${empMatch.apellido} (DNI ${empMatch.dni})`):'—';
+  // Detectar empleado por DNI guardado en este dispositivo
+  const dniGuardado=localStorage.getItem('f_my_dni');
+  const empDevice=dniGuardado?cache.empleados.find(e=>e.dni===dniGuardado):null;
+  // También verificar si la contraseña ingresada es un DNI conocido
+  const empByPass=cache.empleados.find(e=>e.dni===pass);
+  const empDetectado=empDevice||empByPass;
+  const empleado=empDetectado
+    ?encodeURIComponent(`${empDetectado.nombre} ${empDetectado.apellido} (DNI ${empDetectado.dni})`)
+    :'—';
   jsonp({action:'registrarIntento',fecha,hora,pass:pass||'(vacío)',empleado,ok:ok?'true':'false'}).catch(()=>{});
   if(ok){ logged=true; checkLogin(); }
   else { toast('Contraseña incorrecta','err'); }
