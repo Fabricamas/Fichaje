@@ -355,7 +355,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
 <div class="toast" id="toast"></div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwMWPFjgI-BICUFM_Fy233_6bVSJXBP3lAcVHV02KSykvu4a6eltH_vXAe7UMwBxQw6QQ/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbypRFtvdz84iwG7KY5-Wss9qiq8JM4iYCFfjqz6wi6FtnjA9eDmwHJDVslwp3LngYecvg/exec';
 const APP_URL = 'https://fabricamas.github.io/Fichaje/fichaje.html';
 const WORK_LAT = -34.44182796391336;
 const WORK_LNG = -58.57176751896773;
@@ -364,7 +364,7 @@ const DIAS_ES = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
 const MESES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
 // ── CACHE LOCAL (para velocidad en admin) ──
-let cache = { empleados: [], fichajes: [], loaded: false };
+let cache = { empleados: [], fichajes: [], seguridad: [], loaded: false };
 
 // ── CONFIG LOCAL (contraseña, hora) ──
 const LS = { get: k=>{ try{return JSON.parse(localStorage.getItem(k));}catch{return null;} }, set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)) };
@@ -419,6 +419,7 @@ async function apiGet() {
   const d = await jsonp({});
   const empRows = d.empleados || [];
   const fichRows = d.fichajes || [];
+  const segRows = d.seguridad || [];
   const emps = empRows.filter(r=>r[0]&&r[0]!=='id').map(r=>({
     id:String(r[0]), dni:String(r[1]), nombre:String(r[2]), apellido:String(r[3]),
     cargo:r[4]||'', tel:r[5]||'', email:r[6]||'', comment:r[7]||'', creado:r[8]||''
@@ -427,7 +428,11 @@ async function apiGet() {
     id:String(r[0]), dni:String(r[1]), nombre:String(r[2]), apellido:String(r[3]),
     fecha:String(r[4]), hora:String(r[5]), tarde:parseInt(r[6])||0, nota:r[7]||''
   }));
-  cache = { empleados:emps, fichajes:fichs, loaded:true };
+  const segs = segRows.filter(r=>r[0]).map(r=>({
+    fecha:String(r[0]), hora:String(r[1]), pass:String(r[2]),
+    empleado:String(r[3]), resultado:String(r[4])
+  }));
+  cache = { empleados:emps, fichajes:fichs, seguridad:segs, loaded:true };
   return cache;
 }
 async function apiPost(params) {
@@ -506,7 +511,7 @@ function showAsec(id){
   if(id==='sec-registros') loadAndRenderRegistros();
   if(id==='sec-qr') renderQR();
   if(id==='sec-config') loadConfig();
-  if(id==='sec-seguridad') renderSeguridad();
+  if(id==='sec-seguridad') loadAndRenderSeguridad();
 }
 
 // ── FICHAR (lado empleado) ──
@@ -623,9 +628,13 @@ function doLogin(){
   const cfg=getCfg();
   const pass=document.getElementById('admin-pass').value;
   const ok=pass===(cfg.pass||'1614');
-  const intentos=LS.get('f_intentos')||[];
-  intentos.push({ts:Date.now(),pass,ok});
-  LS.set('f_intentos',intentos);
+  // Registrar intento en Sheets
+  const ahora=new Date();
+  const fecha=`${pad(ahora.getDate())}/${pad(ahora.getMonth()+1)}/${ahora.getFullYear()}`;
+  const hora=`${pad(ahora.getHours())}:${pad(ahora.getMinutes())}`;
+  const empMatch=cache.empleados.find(e=>e.dni===pass);
+  const empleado=empMatch?encodeURIComponent(`${empMatch.nombre} ${empMatch.apellido} (DNI ${empMatch.dni})`):'—';
+  jsonp({action:'registrarIntento',fecha,hora,pass:pass||'(vacío)',empleado,ok:ok?'true':'false'}).catch(()=>{});
   if(ok){ logged=true; document.getElementById('admin-pass').value=''; checkLogin(); }
   else { toast('Contraseña incorrecta','err'); document.getElementById('admin-pass').value=''; }
 }
@@ -884,24 +893,34 @@ function exportEmpleadosCSV(){
 }
 
 // ── SEGURIDAD ──
+async function loadAndRenderSeguridad(){
+  document.getElementById('sec-tbody').innerHTML='<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:1.5rem;">Cargando...</td></tr>';
+  try { await apiGet(); } catch(e){ toast('Error al cargar','err'); return; }
+  renderSeguridad();
+}
 function renderSeguridad(){
-  const intentos=(LS.get('f_intentos')||[]).slice().reverse();
-  document.getElementById('sec-tbody').innerHTML=intentos.map(i=>{
-    // Buscar si la contraseña coincide con el DNI de algún empleado
-    const empMatch = cache.empleados.find(e=>e.dni===i.pass);
-    const empCell = empMatch
-      ? `<span style="color:var(--danger);font-weight:600;">⚠ ${empMatch.nombre} ${empMatch.apellido}</span>`
-      : `<span style="color:var(--muted);font-size:11px;">—</span>`;
+  const segs=[...cache.seguridad].reverse();
+  document.getElementById('sec-tbody').innerHTML=segs.map(s=>{
+    const ok=s.resultado==='Correcto';
+    const empCell=s.empleado&&s.empleado!=='—'
+      ?`<span style="color:var(--danger);font-weight:600;">⚠ ${s.empleado}</span>`
+      :`<span style="color:var(--muted);font-size:11px;">—</span>`;
     return `<tr>
-      <td class="mono">${fmtDate(i.ts)}</td>
-      <td class="mono">${fmtHora(i.ts)}</td>
-      <td class="mono" style="color:${i.ok?'var(--muted)':'var(--danger)'};">${i.pass||'(vacío)'}</td>
+      <td class="mono">${s.fecha}</td>
+      <td class="mono">${s.hora}</td>
+      <td class="mono" style="color:${ok?'var(--muted)':'var(--danger)'};">${s.pass}</td>
       <td>${empCell}</td>
-      <td>${i.ok?'<span class="badge badge-ok">✓ Correcto</span>':'<span class="badge badge-danger">✗ Fallido</span>'}</td>
+      <td>${ok?'<span class="badge badge-ok">✓ Correcto</span>':'<span class="badge badge-danger">✗ Fallido</span>'}</td>
     </tr>`;
   }).join('')||'<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:1.5rem;">Sin intentos registrados</td></tr>';
 }
-function borrarIntentos(){ if(!confirm('¿Borrar el historial?'))return; localStorage.removeItem('f_intentos'); renderSeguridad(); toast('Historial borrado'); }
+async function borrarIntentos(){
+  if(!confirm('¿Borrar el historial de seguridad?'))return;
+  try {
+    await apiPost({action:'borrarSeguridad'});
+    await apiGet(); renderSeguridad(); toast('Historial borrado');
+  } catch(e){ toast('Error al borrar','err'); }
+}
 
 // ── INIT ──
 startClock();
