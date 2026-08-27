@@ -624,19 +624,23 @@ function checkLogin(){
   document.getElementById('admin-dash').style.display=logged?'block':'none';
   if(logged) loadAndRenderDashboard();
 }
-function doLogin(){
+async function doLogin(){
   const cfg=getCfg();
   const pass=document.getElementById('admin-pass').value;
   const ok=pass===(cfg.pass||'1614');
-  // Registrar intento en Sheets
+  document.getElementById('admin-pass').value='';
+  // Si no tenemos empleados cargados, los buscamos para detectar coincidencia
+  if(!cache.loaded){
+    try { await apiGet(); } catch(e){}
+  }
   const ahora=new Date();
   const fecha=`${pad(ahora.getDate())}/${pad(ahora.getMonth()+1)}/${ahora.getFullYear()}`;
   const hora=`${pad(ahora.getHours())}:${pad(ahora.getMinutes())}`;
   const empMatch=cache.empleados.find(e=>e.dni===pass);
   const empleado=empMatch?encodeURIComponent(`${empMatch.nombre} ${empMatch.apellido} (DNI ${empMatch.dni})`):'—';
   jsonp({action:'registrarIntento',fecha,hora,pass:pass||'(vacío)',empleado,ok:ok?'true':'false'}).catch(()=>{});
-  if(ok){ logged=true; document.getElementById('admin-pass').value=''; checkLogin(); }
-  else { toast('Contraseña incorrecta','err'); document.getElementById('admin-pass').value=''; }
+  if(ok){ logged=true; checkLogin(); }
+  else { toast('Contraseña incorrecta','err'); }
 }
 function doLogout(){ logged=false; cache={empleados:[],fichajes:[],loaded:false}; checkLogin(); }
 
