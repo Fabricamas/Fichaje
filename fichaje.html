@@ -535,7 +535,10 @@ async function procesarQR(){
     try {
       const data = await apiGet();
       const emp = data.empleados.find(e=>e.dni===dni);
-      if(emp){ await fichar(emp); return; }
+      if(emp){
+        localStorage.setItem('f_my_emp',JSON.stringify({nombre:emp.nombre,apellido:emp.apellido,dni:emp.dni}));
+        await fichar(emp); return;
+      }
     } catch(e){}
     hideLoading();
   }
@@ -575,6 +578,7 @@ async function registerAndFichar(){
       await apiPost({action:'registrar',...emp});
     }
     localStorage.setItem('f_my_dni',dni);
+    localStorage.setItem('f_my_emp',JSON.stringify({nombre:emp.nombre,apellido:emp.apellido,dni:emp.dni}));
     await fichar(emp);
   } catch(e){
     hideLoading();
@@ -629,19 +633,13 @@ async function doLogin(){
   const pass=document.getElementById('admin-pass').value;
   const ok=pass===(cfg.pass||'1614');
   document.getElementById('admin-pass').value='';
-  const btnLogin=document.getElementById('btn-login');
-  btnLogin.disabled=true; btnLogin.textContent='Verificando...';
-  // Siempre cargar empleados frescos para identificar correctamente
-  try { await apiGet(); } catch(e){}
-  btnLogin.disabled=false; btnLogin.textContent='Entrar';
   const ahora=new Date();
   const fecha=`${pad(ahora.getDate())}/${pad(ahora.getMonth()+1)}/${ahora.getFullYear()}`;
   const hora=`${pad(ahora.getHours())}:${pad(ahora.getMinutes())}`;
-  // Detectar empleado por DNI guardado en este dispositivo
+  // Leer DNI guardado en este dispositivo (queda guardado cuando el empleado ficha)
   const dniGuardado=localStorage.getItem('f_my_dni');
-  const empDevice=dniGuardado?cache.empleados.find(e=>e.dni===dniGuardado):null;
-  const empByPass=cache.empleados.find(e=>e.dni===pass);
-  const empDetectado=empDevice||empByPass;
+  const empLocal=dniGuardado?JSON.parse(localStorage.getItem('f_my_emp')||'null'):null;
+  const empDetectado=empLocal||null;
   const empleado=empDetectado
     ?encodeURIComponent(`${empDetectado.nombre} ${empDetectado.apellido} (DNI ${empDetectado.dni})`)
     :'—';
